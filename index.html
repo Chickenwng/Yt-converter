@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube to MP3/MP4 Converter</title>
+    <style>
+        @keyframes neon {
+            0%, 100% {
+                text-shadow: 0 0 10px #00FF00, 0 0 20px #00FF00, 0 0 30px #00FF00, 0 0 40px #00FF00, 0 0 50px #00FF00, 0 0 60px #00FF00, 0 0 70px #00FF00;
+            }
+            50% {
+                text-shadow: 0 0 20px #00FF00, 0 0 30px #00FF00, 0 0 40px #00FF00, 0 0 50px #00FF00, 0 0 60px #00FF00, 0 0 70px #00FF00, 0 0 80px #00FF00;
+            }
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #222;
+            color: #fff;
+            padding: 15px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #333;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: auto;
+        }
+        h1, h2 {
+            color: #00FF00;
+            text-align: center;
+            animation: neon 1.5s infinite alternate;
+        }
+        h2 {
+            font-size: 1.2em;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            margin-bottom: 20px;
+        }
+        .toggle-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #00FF00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0px 0px 10px #00FF00;
+        }
+        .input-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .input-container input {
+            width: 70%;
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .input-container button {
+            padding: 10px 20px;
+            background-color: #00FF00;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function extractVideoId(url) {
+            const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function updateIframes() {
+            const urlInput = document.getElementById('youtube-url').value;
+            const videoId = extractVideoId(urlInput);
+            if (videoId) {
+                document.getElementById('mp3-iframe').src = `https://api.vevioz.com/api/button/mp3/${videoId}`;
+                document.getElementById('mp4-iframe').src = `https://api.vevioz.com/api/button/videos/${videoId}`;
+                document.getElementById('mp3-section').classList.remove('hidden');
+                document.getElementById('mp4-section').classList.remove('hidden');
+            } else {
+                alert('Invalid YouTube URL');
+            }
+        }
+
+        function toggleScrolling() {
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.scrolling = iframe.scrolling === "yes" ? "no" : "yes";
+            });
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>YouTube to MP3/MP4 Converter</h1>
+    </header>
+    <div class="container">
+        <div class="input-container">
+            <input type="text" id="youtube-url" placeholder="Enter YouTube URL">
+            <button onclick="updateIframes()">Convert</button>
+        </div>
+        <button class="toggle-button" onclick="toggleScrolling()">Toggle Scrolling</button>
+        <div id="mp3-section" class="hidden">
+            <h2>MP3 Download</h2>
+            <iframe id="mp3-iframe" src="" scrolling="yes" allowtransparency="true"></iframe>
+        </div>
+        <div id="mp4-section" class="hidden">
+            <h2>MP4 Download</h2>
+            <iframe id="mp4-iframe" src="" scrolling="yes" allowtransparency="true"></iframe>
+        </div>
+    </div>
+</body>
+</html>
